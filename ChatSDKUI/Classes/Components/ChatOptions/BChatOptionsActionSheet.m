@@ -24,23 +24,43 @@
 }
 
 -(BOOL) show {
-    [_delegate hideKeyboard];
-    UIActionSheet * actionSheet = [[UIActionSheet alloc] initWithTitle:[NSBundle t:bOptions]
-                                                              delegate:self
-                                                     cancelButtonTitle:[NSBundle t:bOk]
-                                                destructiveButtonTitle:Nil
-                                                     otherButtonTitles:Nil];
+  [_delegate hideKeyboard];
+  
+  UIViewController *vc = (UIViewController *)_delegate;
+  
+  UIAlertController *actionSheet = [UIAlertController
+    alertControllerWithTitle:[NSBundle t:bOptions]
+    message:Nil
+    preferredStyle:UIAlertControllerStyleActionSheet];
+  UIAlertAction* defaultAction = [UIAlertAction
+    actionWithTitle:[NSBundle t:bOk]
+    style:UIAlertActionStyleDefault
+    handler:^(UIAlertAction * action) {
+      [vc dismissViewControllerAnimated:true completion:nil];
+    }];
+  [actionSheet addAction:defaultAction];
     
-    if (_options.count) {
-        for (BChatOption * option in _options) {
-            [actionSheet addButtonWithTitle:option.title];
-        }
-        [actionSheet showInView:_delegate.currentViewController.view];
+  if (_options.count) {
+    NSNumber *counter = @0;
+    for (BChatOption * option in _options) {
+      int current = [counter intValue];
+      UIAlertAction* currentAction = [UIAlertAction
+        actionWithTitle:option.title
+        style:UIAlertActionStyleDefault
+        handler:^(UIAlertAction * action) {
+          BChatOption * option = self->_options[current];
+          [vc dismissViewControllerAnimated:true completion:nil];
+          [option execute:self->_delegate.currentViewController threadEntityID:self->_delegate.threadEntityID];
+        }];
+      [actionSheet addAction:currentAction];
+      counter = [[NSNumber alloc] initWithInt:current + 1];
     }
-    else {
-        // TODO: hide the option button
-    }
-    return NO;
+    [vc presentViewController:actionSheet animated:true completion:Nil];
+  }
+  else {
+      // TODO: hide the option button
+  }
+  return NO;
 }
 
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
