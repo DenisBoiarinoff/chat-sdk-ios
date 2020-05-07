@@ -174,8 +174,8 @@
 }
 
 - (void)setRobotProfilePicture {
-    NSString * name = [self.model.name stringByReplacingOccurrencesOfString:@" " withString:@""];
-    NSString * url = [@"https://robohash.org/" stringByAppendingFormat:@"%@.png", name];
+    NSString * name = [self.model.email stringByReplacingOccurrencesOfString:@" " withString:@""];
+    NSString *url = [[NSString alloc] initWithFormat:@"http://flathash.com/%@.png", name];
     [self setProfilePictureWithImageURL:url];
 }
 
