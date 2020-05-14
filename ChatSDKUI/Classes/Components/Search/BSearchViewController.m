@@ -299,7 +299,7 @@
             
                 // Check the users entityID to make sure they're not in the exclude list
                 if (!strongSelf->_usersToExclude || ![strongSelf->_usersToExclude containsObject:user]) {
-                    if (user.name.length) {
+                    if (user.email.length) {
                         if (![strongSelf->_users containsObject:user]) {
                             [strongSelf->_users addObject:user];
                         }
